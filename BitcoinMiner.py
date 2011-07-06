@@ -17,6 +17,8 @@ from Queue import Queue, Empty
 from struct import pack, unpack, error
 from threading import Thread, RLock
 
+import pools
+
 # Socket wrapper to enable socket.TCP_NODELAY and KEEPALIVE
 realsocket = socket.socket
 def socketwrap(family=socket.AF_INET, type=socket.SOCK_STREAM, proto=0):
@@ -126,19 +128,8 @@ class BitcoinMiner():
 		self.postdata = {'method': 'getwork', 'id': 'json'}
 		self.connection = None
 
-		self.servers = []
-		for pool in self.options.servers.split(','):
-			try:
-				temp = pool.split('://', 1)
-				if len(temp) == 1:
-					proto = ''; temp = temp[0]
-				else: proto = temp[0]; temp = temp[1]
-				user, temp = temp.split(':', 1)
-				pwd, host = temp.split('@')
-				self.servers.append((proto, user, pwd, host))
-			except ValueError:
-				self.sayLine("Ignored invalid server entry: '%s'", pool)
-				continue
+		self.pools = pools.PoolManager()
+		self.servers = self.pools.get_servers()
 		if not self.servers:
 			self.failure('At least one server is required')
 		else: self.setpool(self.servers[0])

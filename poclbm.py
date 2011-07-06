@@ -14,7 +14,6 @@ parser.add_option('-w', '--worksize', dest='worksize',   default=-1,          he
 parser.add_option('-v', '--vectors',  dest='vectors',    action='store_true', help='use vectors')
 parser.add_option('-s', '--sleep',    dest='frameSleep', default=0,           help='sleep per frame in seconds, default 0', type='float')
 parser.add_option('-e', '--estimate', dest='estimate',   default=900,         help='estimated rate time window in seconds, default 900 (15 minutes)', type='int')
-parser.add_option('--servers',        dest='servers',    default='',          help='list of servers: [https://]user:pass@host:port[,...]')
 parser.add_option('--tolerance',      dest='tolerance',  default=2,           help='use fallback pool only after N consecutive connection errors, default 2', type='int')
 parser.add_option('--failback',       dest='failback',   default=2,           help='attempt to fail back to the primary pool every N getworks, default 2', type='int')
 parser.add_option('--verbose',        dest='verbose',    action='store_true', help='verbose output, suitable for redirection to log file')
