@@ -108,11 +108,47 @@ class BitClockersPool(ProportionalPool):
 	def get_data(self):
 		data = json.loads(urllib2.urlopen('http://bitclockers.com/api').read())
 		self.shares = int(data['roundshares'])
-				
+
+class BitCoinsLCPool(ProportionalPool):
+	name = 'bitcoins.lc'
+	servers = ['bitcoins.lc:8080']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('http://www.bitcoins.lc/stats.json').read())
+		self.shares = int(data['valid_round_shares'])
+
+class BTCGuildPool(ProportionalPool):
+	name = 'btcguild'
+	servers = ['uscentral.btcguild.com:8332', 'useast.btcguild.com:8332', 'de1.btcguild.com:8332', 'de2.btcguild.com:8332']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('http://www.btcguild.com/pool_stats.php').read())
+		self.shares = int(data['round_shares'])
+
 class EligiusPool(Pool):
 	name = 'eligius'
 	servers = ['srv3.mining.eligius.st:8337']
 	fee = 0.0000004096
+				
+class MineCoinPool(ProportionalPool):
+	name = 'mineco.in'
+	servers = ['mineco.in:3000']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('http://mineco.in/stats.json').read())
+		self.shares = int(data['shares_this_round'])
+
+class MtRedPool(ProportionalPool):
+	name = 'mtred'
+	servers = ['173.193.21.69:8337']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
+		self.shares = int(data['roundshares'])
 
 #-------------------------------------------------------------------------------
 # Module Setup
@@ -121,5 +157,9 @@ class EligiusPool(Pool):
 _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
 	'bitclockers': BitClockersPool,
+	'bitcoins.lc': BitCoinsLCPool,
+#	'btcguild': BTCGuildPool,
 	'eligius': EligiusPool,
+	'mineco.in': MineCoinPool,
+	'mtred': MtRedPool,
 }
