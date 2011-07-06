@@ -81,7 +81,7 @@ class ProportionalPool(Pool):
 	@property
 	def utility(self):
 		self.update_data()
-		progress = self.shares / get_difficulty()
+		progress = max(self.shares, 1.0) / get_difficulty()
 		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0] * (1 - self.fee)
 
 #-------------------------------------------------------------------------------
