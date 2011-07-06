@@ -1,12 +1,66 @@
+poclbm-autohop
+==============
+
+Description
+-----------
+
+This modified version of poclbm is designed to automatically hop from mining
+pool to mining pool, maximizing the expected return for the user.
+
+The motivation for writing this modification is to encourage pool operators
+to move away from the proportional scoring system to a more suitable scoring
+system. Some potential alternatives are listed below:
+
+* Geometric: https://forum.bitcoin.org/index.php?topic=4787.0
+* SMPPS: http://eligius.st/wiki/index.php/Shared_Maximum_PPS
+
+Both of these systems should be fair to both constant and intermittent miners,
+as the expected value per share is the same regardless of when in a round the
+share was submitted (unlike proportional).
+
+I understand why the proportional system seems fair on its face, and its
+simplicity is hard to beat. I was initially a fan of the system. However, I have
+come to see that it is easily exploitable, unfortunately.
+
+Usage
+-----
+
+Using this modified client is very similar to using the unmodified client. Most
+options remain the same. The one exception is configuring the servers. There is
+no longer a way to specify servers via the command line. Instead, you must
+create a pools.conf file which contains lines of the following format:
+
+<pool name>	<username>	<password>
+
+Example:
+eligius		username	password
+
+The fields can be separated by any whitespace, but tabs are recommended. The
+currently supported pools are listed below:
+
+### Non-Proportional Pools
+
+eligius (http://eligius.st)
+This pool is not proportionally scored, but is instead used as a fair fallback
+pool if none of the proportional pools is early enough in a round. Its SMPPS
+payout system should be immune to pool hopping.
+
+### Proportional Pools
+
+arsbitcoin (http://www.arsbitcoin.com)
+This pool is soon changing to an SMPPS-based system, but is listed under
+proportional for now.
+
+bitclockers (http://bitclockers.com)
+
+Command-line Parameters
+-----------------------
+
 Usage: poclbm.py [options]
 
 Options:
   --version             show program's version number and exit
   -h, --help            show this help message and exit
-  -u USER, --user=USER  user name
-  --pass=PASSWORD       password
-  -o HOST, --host=HOST  RPC host (without 'http://')
-  -p PORT, --port=PORT  RPC port
   -r RATE, --rate=RATE  hash rate display interval in seconds, default=1
   -f FRAMES, --frames=FRAMES
                         will try to bring single kernel execution to 1/frames
