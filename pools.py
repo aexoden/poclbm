@@ -1,3 +1,4 @@
+import json
 import math
 import re
 import scipy.integrate
@@ -69,33 +70,49 @@ class Pool(object):
 
 	@property
 	def utility(self):
-		return 1.0
+		return 1.0 * (1 - self.fee)
+
+	def update_data(self):
+		if time.time() - self.last_update > 120:
+			self.get_data()
+			self.last_update = time.time()
+
+class ProportionalPool(Pool):
+	@property
+	def utility(self):
+		self.update_data()
+		progress = self.shares / get_difficulty()
+		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0] * (1 - self.fee)
 
 #-------------------------------------------------------------------------------
 # Pools
 #-------------------------------------------------------------------------------
 
-class ArsBitcoinPool(Pool):
+class ArsBitcoinPool(ProportionalPool):
 	name = 'arsbitcoin'
 	servers = ['arsbitcoin.com:8344']
+	fee = 0.0
 
-	def update_data(self):
-		if time.time() - self.last_update > 120:
-			data = urllib2.urlopen('http://www.arsbitcoin.com/stats.php').read()
-			matches = re.search('Shares this round</td><td>([0-9]*)</td', data)
+	def get_data(self):
+		data = urllib2.urlopen('http://www.arsbitcoin.com/stats.php').read()
+		matches = re.search('Shares this round</td><td>([0-9]*)</td', data)
 
-			if matches:
-				self.shares = int(matches.group(1))
+		if matches:
+			self.shares = int(matches.group(1))
 
-	@property
-	def utility(self):
-		self.update_data()
-		progress = self.shares / get_difficulty()
-		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
+class BitClockersPool(ProportionalPool):
+	name = 'bitclockers'
+	servers = ['pool.bitclockers.com:8332']
+	fee = 0.02
 
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('http://bitclockers.com/api').read())
+		self.shares = int(data['roundshares'])
+				
 class EligiusPool(Pool):
 	name = 'eligius'
 	servers = ['srv3.mining.eligius.st:8337']
+	fee = 0.0000004096
 
 #-------------------------------------------------------------------------------
 # Module Setup
@@ -103,5 +120,6 @@ class EligiusPool(Pool):
 
 _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
+	'bitclockers': BitClockersPool,
 	'eligius': EligiusPool,
 }
