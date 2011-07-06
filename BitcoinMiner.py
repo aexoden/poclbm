@@ -129,10 +129,13 @@ class BitcoinMiner():
 		self.connection = None
 
 		self.pools = pools.PoolManager()
-		self.servers = self.pools.get_servers()
+		self.best_pools = self.pools.get_best_pools()
+		self.servers = pools.get_servers(self.best_pools)
 		if not self.servers:
 			self.failure('At least one server is required')
-		else: self.setpool(self.servers[0])
+		else:
+			self.sayLine('Switching to {} with utility {:.3f}'.format(self.best_pools[0].name, self.best_pools[0].utility))
+			self.setpool(self.servers[0])
 
 	def say(self, format, args=()):
 		with self.outputLock:
@@ -228,6 +231,15 @@ class BitcoinMiner():
 		return httplib.HTTPConnection(self.host, strict=True, timeout=timeout)
 
 	def getwork(self, data=None):
+		previous_best_pool = self.best_pools[0]
+		self.best_pools = self.pools.get_best_pools()
+		self.servers = pools.get_servers(self.best_pools)
+
+		if previous_best_pool != self.best_pools[0]:
+			self.sayLine("Switching to {} with utility {:.3f}".format(self.best_pools[0].name, self.best_pools[0].utility))
+			self.setpool(self.servers[0])
+			self.connection = None
+			
 		save_pool = None
 		try:
 			if self.pool != self.servers[0] and self.options.failback > 0:

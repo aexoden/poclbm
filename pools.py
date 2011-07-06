@@ -4,6 +4,15 @@ import re
 # Functions
 #-------------------------------------------------------------------------------
 
+def get_servers(pools):
+	servers = []
+
+	for pool in pools:
+		for server in pool.servers:
+			servers.append(('', pool.username, pool.password, server))
+
+	return servers
+
 def load_pool_config(filename):
 	pools = {}
 
@@ -30,14 +39,8 @@ class PoolManager(object):
 			if pool in _pool_class_map:
 				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1])
 
-	def get_servers(self):
-		servers = []
-
-		for pool_name, pool in self.pools.items():
-			for server in pool.servers:
-				servers.append(('', pool.username, pool.password, server))
-
-		return servers
+	def get_best_pools(self):
+		return sorted(self.pools.values(), key=lambda pool: pool.utility, reverse=True)
 
 #-------------------------------------------------------------------------------
 # Pool Base Class
@@ -48,14 +51,20 @@ class Pool(object):
 		self.username = username
 		self.password = password
 
+	@property
+	def utility(self):
+		return 1.0
+
 #-------------------------------------------------------------------------------
 # Pools
 #-------------------------------------------------------------------------------
 
 class ArsBitcoinPool(Pool):
+	name = 'arsbitcoin'
 	servers = ['arsbitcoin.com:8344']
 
 class EligiusPool(Pool):
+	name = 'eligius'
 	servers = ['srv3.mining.eligius.st:8337']
 
 #-------------------------------------------------------------------------------
