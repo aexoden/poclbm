@@ -88,17 +88,10 @@ class ProportionalPool(Pool):
 # Pools
 #-------------------------------------------------------------------------------
 
-class ArsBitcoinPool(ProportionalPool):
+class ArsBitcoinPool(Pool):
 	name = 'arsbitcoin'
 	servers = ['arsbitcoin.com:8344']
 	fee = 0.0
-
-	def get_data(self):
-		data = urllib2.urlopen('http://www.arsbitcoin.com/stats.php').read()
-		matches = re.search('Shares this round</td><td>([0-9]*)</td', data)
-
-		if matches:
-			self.shares = int(matches.group(1))
 
 class BitClockersPool(ProportionalPool):
 	name = 'bitclockers'

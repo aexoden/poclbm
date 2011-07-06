@@ -38,18 +38,17 @@ eligius		username	password
 The fields can be separated by any whitespace, but tabs are recommended. The
 currently supported pools are listed below:
 
-### Non-Proportional Pools
+### SMPPS Pools
 
-eligius (http://eligius.st)
-This pool is not proportionally scored, but is instead used as a fair fallback
-pool if none of the proportional pools is early enough in a round. Its SMPPS
-payout system should be immune to pool hopping.
-
-### Proportional Pools
+These pools run the SMPPS payout system, and should therefore be immune to pool
+hopping. They are used as a fair fallback in case none of the proportional pools
+is appealing enough.
 
 arsbitcoin (http://www.arsbitcoin.com)
-This pool is soon changing to an SMPPS-based system, but is listed under
-proportional for now.
+
+eligius (http://eligius.st)
+
+### Proportional Pools
 
 bitclockers (http://bitclockers.com)
 
