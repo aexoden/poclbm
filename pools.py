@@ -1,8 +1,23 @@
+import math
 import re
+import scipy.integrate
+import time
+import urllib2
+
+_difficulty = (0, 0)
 
 #-------------------------------------------------------------------------------
 # Functions
 #-------------------------------------------------------------------------------
+
+def get_difficulty():
+	global _difficulty
+
+	if time.time() - _difficulty[1] > 3600:
+		difficulty = float(urllib2.urlopen('http://blockexplorer.com/q/getdifficulty').read())
+		_difficulty = (difficulty, time.time())
+
+	return _difficulty[0]
 
 def get_servers(pools):
 	servers = []
@@ -50,6 +65,7 @@ class Pool(object):
 	def __init__(self, username, password):
 		self.username = username
 		self.password = password
+		self.last_update = 0
 
 	@property
 	def utility(self):
@@ -62,6 +78,20 @@ class Pool(object):
 class ArsBitcoinPool(Pool):
 	name = 'arsbitcoin'
 	servers = ['arsbitcoin.com:8344']
+
+	def update_data(self):
+		if time.time() - self.last_update > 120:
+			data = urllib2.urlopen('http://www.arsbitcoin.com/stats.php').read()
+			matches = re.search('Shares this round</td><td>([0-9]*)</td', data)
+
+			if matches:
+				self.shares = int(matches.group(1))
+
+	@property
+	def utility(self):
+		self.update_data()
+		progress = self.shares / get_difficulty()
+		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
 
 class EligiusPool(Pool):
 	name = 'eligius'
