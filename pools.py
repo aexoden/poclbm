@@ -113,7 +113,7 @@ class BitCoinsLCPool(ProportionalPool):
 
 class BTCGuildPool(ProportionalPool):
 	name = 'btcguild'
-	servers = ['uscentral.btcguild.com:8332', 'useast.btcguild.com:8332', 'de1.btcguild.com:8332', 'de2.btcguild.com:8332']
+	servers = ['uscentral.btcguild.com:8332', 'useast.btcguild.com:8332']
 	fee = 0.0
 
 	def get_data(self):
@@ -151,7 +151,7 @@ _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
 	'bitclockers': BitClockersPool,
 	'bitcoins.lc': BitCoinsLCPool,
-#	'btcguild': BTCGuildPool,
+	'btcguild': BTCGuildPool,
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
 	'mtred': MtRedPool,

@@ -55,7 +55,6 @@ bitclockers (http://bitclockers.com)
 bitcoins.lc (http://bitcoins.lc)
 
 btcguild (http://www.btcguild.com)
-This pool is currently disabled until it comes back online from the DDoS.
 
 mineco.in (http://mineco.in)
 
