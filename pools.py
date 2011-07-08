@@ -122,7 +122,7 @@ class BTCGuildPool(ProportionalPool):
 
 class EligiusPool(Pool):
 	name = 'eligius'
-	servers = ['srv3.mining.eligius.st:8337']
+	servers = ['mining.eligius.st:8337']
 	fee = 0.0000004096
 				
 class MineCoinPool(ProportionalPool):
