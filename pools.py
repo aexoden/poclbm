@@ -124,7 +124,7 @@ class EligiusPool(Pool):
 	name = 'eligius'
 	servers = ['mining.eligius.st:8337']
 	fee = 0.0000004096
-				
+
 class MineCoinPool(ProportionalPool):
 	name = 'mineco.in'
 	servers = ['mineco.in:3000']
