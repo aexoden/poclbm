@@ -80,7 +80,11 @@ class Pool(object):
 class ProportionalPool(Pool):
 	@property
 	def utility(self):
-		self.update_data()
+		try:
+			self.update_data()
+		except urllib2.HTTPError as e:
+			self.shares = get_difficulty() * 2
+
 		progress = max(self.shares, 1.0) / get_difficulty()
 		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0] * (1 - self.fee)
 
@@ -142,6 +146,7 @@ class MtRedPool(ProportionalPool):
 	def get_data(self):
 		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
 		self.shares = int(data['roundshares'])
+
 
 #-------------------------------------------------------------------------------
 # Module Setup
