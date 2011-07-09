@@ -25,7 +25,7 @@ def get_servers(pools):
 
 	for pool in pools:
 		for server in pool.servers:
-			servers.append(('', pool.username, pool.password, server))
+			servers.append(('', pool.username, pool.password, server, pool.name))
 
 	return servers
 

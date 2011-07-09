@@ -9,6 +9,7 @@ from optparse import OptionGroup
 usage = "usage: %prog [OPTION]..."
 parser = OptionParser(version=USER_AGENT, usage=usage)
 parser.add_option('--verbose',        dest='verbose',    action='store_true', help='verbose output, suitable for redirection to log file')
+parser.add_option('-q', '--quiet',    dest='quiet',      action='store_true', help='suppress all output except hash rate display')
 
 group = OptionGroup(parser, "Miner Options")
 group.add_option('-r', '--rate',      dest='rate',       default=1,           help='hash rate display interval in seconds, default=1', type='float')
@@ -16,6 +17,7 @@ group.add_option('-e', '--estimate',  dest='estimate',   default=900,         he
 group.add_option('-a', '--askrate',   dest='askrate',    default=5,           help='how many seconds between getwork requests, default 5, max 10', type='int')
 group.add_option('-t', '--tolerance', dest='tolerance',  default=2,           help='use fallback pool only after N consecutive connection errors, default 2', type='int')
 group.add_option('-b', '--failback',  dest='failback',   default=10,          help='attempt to fail back to the primary pool every N getworks, default 2', type='int')
+parser.add_option('--no-server-failbacks', dest='nsf',   action='store_true', help='disable using failback hosts provided by server')
 parser.add_option_group(group)
 
 group = OptionGroup(parser, "Kernel Options")
@@ -27,15 +29,10 @@ group.add_option('-s', '--sleep',    dest='frameSleep', default=0,           hel
 group.add_option('-v', '--vectors',  dest='vectors',    action='store_true', help='use vectors')
 parser.add_option_group(group)
 
-(options, args) = parser.parse_args()
-options.servers = ''
-for arg in args:
-	options.servers += arg + ','
-options.servers = options.servers.rstrip(',')
+(options, options.servers) = parser.parse_args()
 
 
 platforms = cl.get_platforms()
-
 
 if options.platform >= len(platforms) or (options.platform == -1 and len(platforms) > 1):
 	print 'Wrong platform or more than one OpenCL platforms found, use --platform to select one of the following\n'
