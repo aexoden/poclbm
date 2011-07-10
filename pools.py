@@ -117,7 +117,7 @@ class BitCoinsLCPool(ProportionalPool):
 
 class BTCGuildPool(ProportionalPool):
 	name = 'btcguild'
-	servers = ['uscentral.btcguild.com:8332', 'useast.btcguild.com:8332', 'de.btcguild.com:8332']
+	servers = ['us.btcguild.com:8332', 'de.btcguild.com:8332', 'uscentral.btcguild.com:8332', 'useast.btcguild.com:8332']
 	fee = 0.0
 
 	def get_data(self):
