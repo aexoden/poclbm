@@ -117,7 +117,7 @@ class BitCoinsLCPool(ProportionalPool):
 
 class BTCGuildPool(ProportionalPool):
 	name = 'btcguild'
-	servers = ['us.btcguild.com:8332', 'de.btcguild.com:8332', 'uscentral.btcguild.com:8332', 'useast.btcguild.com:8332']
+	servers = ['uswest.btcguild.com:8332', 'uscentral.btcguild.com:8332', 'useast.btcguild.com:8332']
 	fee = 0.0
 
 	def get_data(self):
@@ -129,14 +129,10 @@ class EligiusPool(Pool):
 	servers = ['mining.eligius.st:8337']
 	fee = 0.0000004096
 
-class MineCoinPool(ProportionalPool):
+class MineCoinPool(Pool):
 	name = 'mineco.in'
 	servers = ['mineco.in:3000']
 	fee = 0.0
-
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('http://mineco.in/stats.json').read())
-		self.shares = int(data['shares_this_round'])
 
 class MtRedPool(ProportionalPool):
 	name = 'mtred'

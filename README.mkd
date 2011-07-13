@@ -13,10 +13,11 @@ system. Some potential alternatives are listed below:
 
 * Geometric: https://forum.bitcoin.org/index.php?topic=4787.0
 * SMPPS: http://eligius.st/wiki/index.php/Shared_Maximum_PPS
+* PPLNS
 
-Both of these systems should be fair to both constant and intermittent miners,
-as the expected value per share is the same regardless of when in a round the
-share was submitted (unlike proportional).
+All three of these systems should be fair to both constant and intermittent
+miners, as the expected value per share is the same regardless of when in a
+round the share was submitted (unlike proportional).
 
 I understand why the proportional system seems fair on its face, and its
 simplicity is hard to beat. I was initially a fan of the system. However, I have
@@ -48,6 +49,10 @@ arsbitcoin (http://www.arsbitcoin.com)
 
 eligius (http://eligius.st)
 
+### PPLNS Pools
+
+mineco.in (http://mineco.in)
+
 ### Proportional Pools
 
 bitclockers (http://bitclockers.com)
@@ -55,8 +60,6 @@ bitclockers (http://bitclockers.com)
 bitcoins.lc (http://bitcoins.lc)
 
 btcguild (http://www.btcguild.com)
-
-mineco.in (http://mineco.in)
 
 mtred (http://mtred.com)
 
