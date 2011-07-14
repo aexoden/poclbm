@@ -115,6 +115,15 @@ class BitCoinsLCPool(ProportionalPool):
 		data = json.loads(urllib2.urlopen('http://www.bitcoins.lc/stats.json').read())
 		self.shares = int(data['valid_round_shares'])
 
+class BitPitPool(ProportionalPool):
+	name = 'bitpit'
+	servers = ['pool.bitp.it:8334']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('https://pool.bitp.it/api/pool').read())
+		self.shares = int(data['shares'])
+
 class BTCGuildPool(ProportionalPool):
 	name = 'btcguild'
 	servers = ['uswest.btcguild.com:8332', 'uscentral.btcguild.com:8332', 'useast.btcguild.com:8332']
@@ -152,6 +161,7 @@ _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
 	'bitclockers': BitClockersPool,
 	'bitcoins.lc': BitCoinsLCPool,
+	'bitpit': BitPitPool,
 	'btcguild': BTCGuildPool,
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,

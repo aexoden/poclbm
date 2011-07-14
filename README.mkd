@@ -13,7 +13,7 @@ system. Some potential alternatives are listed below:
 
 * Geometric: https://forum.bitcoin.org/index.php?topic=4787.0
 * SMPPS: http://eligius.st/wiki/index.php/Shared_Maximum_PPS
-* PPLNS
+* PPLNS: http://eligius.st/wiki/index.php/Pay_Per_Last_N_Shares
 
 All three of these systems should be fair to both constant and intermittent
 miners, as the expected value per share is the same regardless of when in a
@@ -58,6 +58,8 @@ mineco.in (http://mineco.in)
 bitclockers (http://bitclockers.com)
 
 bitcoins.lc (http://bitcoins.lc)
+
+bitpit (http://pool.bitp.it)
 
 btcguild (http://www.btcguild.com)
 
