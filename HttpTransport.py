@@ -18,9 +18,9 @@ class HttpTransport(Transport):
 	def __init__(self, miner):
 		self.connection = self.lp_connection = None
 		super(HttpTransport, self).__init__(miner)
-		self.timeout = 5
+		self.timeout = 45
 		self.long_poll_timeout = 3600
-		self.long_poll_max_askrate = 60 - self.timeout
+		self.long_poll_max_askrate = 75
 		self.max_redirects = 3
 
 		self.postdata = {'method': 'getwork', 'id': 'json'}
