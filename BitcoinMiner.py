@@ -55,9 +55,13 @@ class BitcoinMiner():
 			say_line('checking %s <= %s', (hash, target))
 
 	def share_found(self, hash, accepted, is_block):
-		self.share_count[if_else(accepted, 1, 0)] += 1
+		if accepted is None:
+			outcome = 'ERROR (will resend)'
+		else:
+			self.share_count[if_else(accepted, 1, 0)] += 1
+			outcome = if_else(accepted, 'accepted', '_rejected_')
 		if self.options.verbose or is_block or not accepted:
-			say_line('%s%s, %s', (if_else(is_block, 'block ', ''), hash, if_else(accepted, 'accepted', '_rejected_')))
+			say_line('%s%s, %s', (if_else(is_block, 'block ', ''), hash, outcome))
 
 	def mining_thread(self):
 		self.load_kernel()

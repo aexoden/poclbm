@@ -44,10 +44,15 @@ class HttpTransport(Transport):
 					if self.update:
 						self.queue_work(work)
 
+				retry = []
 				while not self.result_queue.empty():
 					result = self.result_queue.get(False)
 					with self.lock:
 						rv = self.send(result)
+						if rv is False:
+							retry.append(result)
+				for result in retry:
+					self.result_queue.put(result)
 				sleep(1)
 			except Exception:
 				say_line("Unexpected error:")
@@ -131,8 +136,8 @@ class HttpTransport(Transport):
 	def send_internal(self, result, nonce):
 		data = ''.join([result.header.encode('hex'), pack('III', long(result.time), long(result.difficulty), long(nonce)).encode('hex'), '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'])
 		accepted = self.getwork(data)
-		if accepted != None:
-			self.report(nonce, accepted)
+		self.report(nonce, accepted)
+		return not accepted is None
 
 	def long_poll_thread(self):
 		last_host = None
