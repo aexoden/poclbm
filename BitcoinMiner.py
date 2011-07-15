@@ -65,7 +65,7 @@ class BitcoinMiner():
 		else:
 			self.share_count[if_else(accepted, 1, 0)] += 1
 			outcome = if_else(accepted, 'accepted', '_rejected_')
-		if self.options.verbose or is_block or not accepted:
+		if self.options.verbose or self.options.show_all_shares or is_block or not accepted:
 			say_line('%s%s, %s', (if_else(is_block, 'block ', ''), hash, outcome))
 
 	def mining_thread(self):
