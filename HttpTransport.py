@@ -27,6 +27,8 @@ class HttpTransport(Transport):
 
 		self.long_poll_active = False
 		self.long_poll_url = ''
+		
+		self.getwork_count = 0
 
 	def loop(self):
 		self.should_stop = False
@@ -96,6 +98,8 @@ class HttpTransport(Transport):
 				self.failback_getwork_count += 1
 			if not self.connection:
 				self.connection = self.connect(self.proto, self.host, self.timeout)
+			if data is None:
+				self.getwork_count += 1
 			self.postdata['params'] = if_else(data, [data], [])
 			(self.connection, result) = self.request(self.connection, '/', self.headers, dumps(self.postdata))
 			self.errors = 0
