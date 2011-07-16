@@ -99,7 +99,7 @@ class HttpTransport(Transport):
 		self.servers = pools.get_servers(self.best_pools)
 
 		if previous_best_pool != self.best_pools[0]:
-			self.sayLine("Switching to {} with utility {:.3f}".format(self.best_pools[0].name, self.best_pools[0].utility))
+			say_line("Switching to {} with utility {:.3f}".format(self.best_pools[0].name, self.best_pools[0].utility))
 			self.setpool(self.servers[0])
 			self.connection = None
 
