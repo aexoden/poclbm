@@ -16,7 +16,7 @@ def say(format, args=(), say_quiet=False):
         if verbose:
             print '%s%s,' % (server, datetime.now().strftime(TIME_FORMAT)), p
         else:
-            sys.stdout.write('\r%s\r%s%s' % (' '*85, server, p))
+            sys.stdout.write('\r%s\r%s%s' % (' '*100, server, p))
         sys.stdout.flush()
 
 def say_line(format, args=()):
