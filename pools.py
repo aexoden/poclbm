@@ -133,6 +133,11 @@ class BTCGuildPool(ProportionalPool):
 		data = json.loads(urllib2.urlopen('http://www.btcguild.com/pool_stats.php').read())
 		self.shares = int(data['round_shares'])
 
+class EclipseMCPool(Pool):
+	name = 'eclipsemc'
+	servers = ['us.eclipsemc.com:8337', 'eu.eclipsemc.com:8337']
+	fee = 0.0
+
 class EligiusPool(Pool):
 	name = 'eligius'
 	servers = ['mining.eligius.st:8337']
@@ -163,6 +168,7 @@ _pool_class_map = {
 	'bitcoins.lc': BitCoinsLCPool,
 	'bitpit': BitPitPool,
 	'btcguild': BTCGuildPool,
+	'eclipsemc': EclipseMCPool,
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
 	'mtred': MtRedPool,

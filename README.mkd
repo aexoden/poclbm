@@ -39,19 +39,19 @@ eligius		username	password
 The fields can be separated by any whitespace, but tabs are recommended. The
 currently supported pools are listed below:
 
-### SMPPS Pools
+### Fair Pools
 
-These pools run the SMPPS payout system, and should therefore be immune to pool
-hopping. They are used as a fair fallback in case none of the proportional pools
-is appealing enough.
+The following pools all use payout systems that should be immune to pool
+hopping. They are used as backups in case none of the proportional pools has an
+appealing expected value per share.
 
-arsbitcoin (http://www.arsbitcoin.com)
+arsbitcoin (http://www.arsbitcoin.com) (SMPPS)
 
-eligius (http://eligius.st)
+eclipsemc (http://www.eclipsemc.com) (Geometric)
 
-### PPLNS Pools
+eligius (http://eligius.st) (SMPPS)
 
-mineco.in (http://mineco.in)
+mineco.in (http://mineco.in) (PPLNS)
 
 ### Proportional Pools
 
