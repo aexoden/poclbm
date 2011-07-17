@@ -62,6 +62,9 @@ bitcoins.lc (http://bitcoins.lc)
 bitpit (http://pool.bitp.it)
 
 btcguild (http://www.btcguild.com)
+This pool is currently disabled, as it is using a stat delay to mask the
+inherent unfairness of its payout system. It will remain disabled only until a
+suitable workaround for the stats delay is in place.
 
 mtred (http://mtred.com)
 
