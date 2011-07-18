@@ -166,7 +166,7 @@ _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
 	'bitclockers': BitClockersPool,
 #	'bitcoins.lc': BitCoinsLCPool,
-	'bitpit': BitPitPool,
+#	'bitpit': BitPitPool,
 #	'btcguild': BTCGuildPool,
 	'eclipsemc': EclipseMCPool,
 	'eligius': EligiusPool,
