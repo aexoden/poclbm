@@ -165,7 +165,7 @@ class MtRedPool(ProportionalPool):
 _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
 	'bitclockers': BitClockersPool,
-	'bitcoins.lc': BitCoinsLCPool,
+#	'bitcoins.lc': BitCoinsLCPool,
 	'bitpit': BitPitPool,
 #	'btcguild': BTCGuildPool,
 	'eclipsemc': EclipseMCPool,
