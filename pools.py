@@ -82,7 +82,7 @@ class ProportionalPool(Pool):
 	def utility(self):
 		try:
 			self.update_data()
-		except ValueError, urllib2.HTTPError:
+		except (ValueError, urllib2.HTTPError):
 			self.shares = get_difficulty() * 2
 
 		progress = max(self.shares, 1.0) / get_difficulty()
