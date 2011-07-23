@@ -103,12 +103,12 @@ class ProportionalPool(Pool):
 
 		utility = 0.0
 
-		for block_time, probability in blocks.items():
+		for block_time, probability in sorted(blocks.items()):
 			shares = (self.rate * (time.time() - float(block_time))) / 2 ** 32
 			progress = max(shares, 1.0) / get_difficulty()
-			utility = probability * scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
+			utility += probability * scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
 
-		return 1 - self.fee
+		return utility * 1 - self.fee
 
 #-------------------------------------------------------------------------------
 # Geometric/PPLNS/SMPPS Pools
