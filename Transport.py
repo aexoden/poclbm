@@ -34,7 +34,11 @@ class Transport(object):
 		if not self.servers:
 			self.failure('At least one server is required')
 		else:
-			say_line('Switching to {} with utility {:.3f}'.format(self.best_pools[0].name, self.best_pools[0].utility))
+			say_line('Switching to {} with utility {:.3f}'.format(self.best_pools[0].name, self.best_pools[0].utility), show_server=False)
+			say_line("Current utilities:", show_server=False)
+			for pool in self.best_pools:
+				say_line('  {:15}: {:.3f}'.format(pool.name, pool.utility), show_server=False)
+
 			self.set_server(self.servers[0])
 			self.user_servers = list(self.servers)
 
@@ -90,7 +94,7 @@ class Transport(object):
 		self.proto = proto
 		self.host = host
 		#self.say_line('Setting server %s (%s @ %s)', (name, user, host))
-		say_line('Setting server (%s @ %s)', (user, name))
+		say_line('Setting server (%s @ %s)', (user, name), show_server=False)
 		log.server = name + ' '
 
 	def add_servers(self, hosts):
