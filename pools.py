@@ -63,22 +63,26 @@ class PoolManager(object):
 
 	def load_pools(self, config_filename):
 		self.pools = {}
+		priority = 1
 
 		for pool, pool_data in sorted(load_pool_config(config_filename).items()):
 			if pool in _pool_class_map:
-				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1])
+				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1], priority)
+
+			priority += 1
 
 	def get_best_pools(self):
-		return sorted(self.pools.values(), key=lambda pool: pool.utility, reverse=True)
+		return sorted(self.pools.values(), key=lambda pool: (pool.utility, 0 - pool.priority), reverse=True)
 
 #-------------------------------------------------------------------------------
 # Pool Base Class
 #-------------------------------------------------------------------------------
 
 class Pool(object):
-	def __init__(self, username, password):
+	def __init__(self, username, password, priority):
 		self.username = username
 		self.password = password
+		self.priority = priority
 		self.last_update = 0
 		self.rate = 1.0
 
