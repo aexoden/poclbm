@@ -5,9 +5,8 @@ import scipy.integrate
 import time
 import urllib2
 
-import httplib2
-
 _difficulty = (0, 0)
+_pool_blocks = ({}, 0)
 
 #-------------------------------------------------------------------------------
 # Functions
@@ -21,6 +20,18 @@ def get_difficulty():
 		_difficulty = (difficulty, time.time())
 
 	return _difficulty[0]
+
+def get_pool_blocks(pool):
+	global _pool_blocks
+
+	if time.time() - _pool_blocks[1] > 120:
+		try:
+			pool_blocks = json.loads(urllib2.urlopen('http://bitcoin.calindora.com/pool_recent_blocks.json').read())
+			_pool_blocks = (pool_blocks, time.time())
+		except:
+			pass
+
+	return _pool_blocks[0][pool] if pool in _pool_blocks[0] else {}
 
 def get_servers(pools):
 	servers = []
@@ -88,8 +99,16 @@ class ProportionalPool(Pool):
 		except (ValueError, urllib2.HTTPError):
 			pass
 
-		progress = max(self.shares, 1.0) / get_difficulty()
-		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0] * (1 - self.fee)
+		blocks = get_pool_blocks(self.pident_name)
+
+		utility = 0.0
+
+		for block_time, probability in blocks.items():
+			shares = (self.rate * (time.time() - float(block_time))) / 2 ** 32
+			progress = max(shares, 1.0) / get_difficulty()
+			utility = probability * scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
+
+		return 1 - self.fee
 
 #-------------------------------------------------------------------------------
 # Geometric/PPLNS/SMPPS Pools
