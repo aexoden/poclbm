@@ -92,25 +92,9 @@ class ProportionalPool(Pool):
 		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0] * (1 - self.fee)
 
 #-------------------------------------------------------------------------------
-# Pools
+# Geometric/PPLNS/SMPPS Pools
 #-------------------------------------------------------------------------------
-
-# POOLS TO ADD/UPDATE:
-# Bitcoinpool
-# Bitcoins.lc
-# BitPit
-# BTCGuild
-# BTCMine
-# DeepBit
-# EclipseMC
-# Eligius
-# Ozco.in
-# Mineco.in
-# MtRed
-# RFCPool
-# Slush
-# TripleMining
-# X8s
+# TODO: Figure out which pools give transaction fees back.
 
 class ArsBitcoinPool(Pool):
 	name = 'arsbitcoin'
@@ -118,31 +102,11 @@ class ArsBitcoinPool(Pool):
 	servers = ['arsbitcoin.com:8344']
 	fee = 0.0
 
-class BitCoinsLCPool(ProportionalPool):
-	name = 'bitcoins.lc'
-	pident_name = 'Bitcoins.lc'
-	servers = ['bitcoins.lc:8080']
-	fee = 0.0
-
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('http://www.bitcoins.lc/stats.json').read())
-		self.rate = float(data['hash_rate'])
-
 class BitPitPool(Pool):
 	name = 'bitpit'
 	pident_name = 'BitPit'
 	servers = ['pool.bitp.it:8334']
 	fee = 0.0
-
-class BTCGuildPool(ProportionalPool):
-	name = 'btcguild'
-	pident_name = 'BTCGuild'
-	servers = ['uswest.btcguild.com:8332', 'uscentral.btcguild.com:8332', 'useast.btcguild.com:8332']
-	fee = 0.0
-
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('http://www.btcguild.com/pool_stats.php').read())
-		self.rate = float(data['hash_rate']) * 1000000000.0
 
 class EclipseMCPool(Pool):
 	name = 'eclipsemc'
@@ -154,7 +118,7 @@ class EligiusPool(Pool):
 	name = 'eligius'
 	pident_name = 'Eligius'
 	servers = ['mining.eligius.st:8337']
-	fee = 0.0000004096
+	fee = 0.000001
 
 class MineCoinPool(Pool):
 	name = 'mineco.in'
@@ -162,16 +126,48 @@ class MineCoinPool(Pool):
 	servers = ['mineco.in:3000']
 	fee = 0.0
 
+#-------------------------------------------------------------------------------
+# Proportional Pools
+#-------------------------------------------------------------------------------
+# POOLS TO ADD/UPDATE:
+# Bitcoinpool
+# BTCMine
+# DeepBit
+# Ozco.in
+# RFCPool
+# Slush
+# TripleMining
+# X8s
+
+class BitCoinsLCPool(ProportionalPool):
+	name = 'bitcoins.lc'
+	pident_name = 'Bitcoins.lc'
+	servers = ['bitcoins.lc:8080']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('http://www.bitcoins.lc/stats.json').read())
+		self.rate = float(data['hash_rate'])
+
+class BTCGuildPool(ProportionalPool):
+	name = 'btcguild'
+	pident_name = 'BTCGuild'
+	servers = ['uswest.btcguild.com:8332', 'uscentral.btcguild.com:8332',]
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('http://www.btcguild.com/pool_stats.php').read())
+		self.rate = float(data['hash_rate']) * 1000000000.0
+
 class MtRedPool(ProportionalPool):
 	name = 'mtred'
 	pident_name = 'MtRed'
-	servers = ['173.193.21.69:8337']
+	servers = ['mtred.com:8337']
 	fee = 0.0
 
 	def get_data(self):
 		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
 		self.rate = float(data['hashrate']) * 1000000000.0
-
 
 #-------------------------------------------------------------------------------
 # Module Setup
@@ -180,7 +176,7 @@ class MtRedPool(ProportionalPool):
 _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
 	'bitcoins.lc': BitCoinsLCPool,
-#	'bitpit': BitPitPool,
+	'bitpit': BitPitPool,
 	'btcguild': BTCGuildPool,
 	'eclipsemc': EclipseMCPool,
 	'eligius': EligiusPool,
