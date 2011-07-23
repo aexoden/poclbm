@@ -5,6 +5,8 @@ import scipy.integrate
 import time
 import urllib2
 
+import httplib2
+
 _difficulty = (0, 0)
 
 #-------------------------------------------------------------------------------
@@ -67,6 +69,7 @@ class Pool(object):
 		self.username = username
 		self.password = password
 		self.last_update = 0
+		self.rate = 1.0
 
 	@property
 	def utility(self):
@@ -83,7 +86,7 @@ class ProportionalPool(Pool):
 		try:
 			self.update_data()
 		except (ValueError, urllib2.HTTPError):
-			self.shares = get_difficulty() * 2
+			pass
 
 		progress = max(self.shares, 1.0) / get_difficulty()
 		return scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0] * (1 - self.fee)
@@ -92,70 +95,82 @@ class ProportionalPool(Pool):
 # Pools
 #-------------------------------------------------------------------------------
 
+# POOLS TO ADD/UPDATE:
+# Bitcoinpool
+# Bitcoins.lc
+# BitPit
+# BTCGuild
+# BTCMine
+# DeepBit
+# EclipseMC
+# Eligius
+# Ozco.in
+# Mineco.in
+# MtRed
+# RFCPool
+# Slush
+# TripleMining
+# X8s
+
 class ArsBitcoinPool(Pool):
 	name = 'arsbitcoin'
+	pident_name = 'ArsBitcoin'
 	servers = ['arsbitcoin.com:8344']
 	fee = 0.0
 
-class BitClockersPool(ProportionalPool):
-	name = 'bitclockers'
-	servers = ['pool.bitclockers.com:8332']
-	fee = 0.02
-
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('http://bitclockers.com/api').read())
-		self.shares = int(data['roundshares'])
-
 class BitCoinsLCPool(ProportionalPool):
 	name = 'bitcoins.lc'
+	pident_name = 'Bitcoins.lc'
 	servers = ['bitcoins.lc:8080']
 	fee = 0.0
 
 	def get_data(self):
 		data = json.loads(urllib2.urlopen('http://www.bitcoins.lc/stats.json').read())
-		self.shares = int(data['valid_round_shares'])
+		self.rate = float(data['hash_rate'])
 
-class BitPitPool(ProportionalPool):
+class BitPitPool(Pool):
 	name = 'bitpit'
+	pident_name = 'BitPit'
 	servers = ['pool.bitp.it:8334']
 	fee = 0.0
 
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('https://pool.bitp.it/api/pool').read())
-		self.shares = int(data['shares'])
-
 class BTCGuildPool(ProportionalPool):
 	name = 'btcguild'
+	pident_name = 'BTCGuild'
 	servers = ['uswest.btcguild.com:8332', 'uscentral.btcguild.com:8332', 'useast.btcguild.com:8332']
 	fee = 0.0
 
 	def get_data(self):
 		data = json.loads(urllib2.urlopen('http://www.btcguild.com/pool_stats.php').read())
-		self.shares = int(data['round_shares'])
+		self.rate = float(data['hash_rate']) * 1000000000.0
 
 class EclipseMCPool(Pool):
 	name = 'eclipsemc'
+	pident_name = 'EclipseMC'
 	servers = ['us.eclipsemc.com:8337', 'eu.eclipsemc.com:8337']
 	fee = 0.0
 
 class EligiusPool(Pool):
 	name = 'eligius'
+	pident_name = 'Eligius'
 	servers = ['mining.eligius.st:8337']
 	fee = 0.0000004096
 
 class MineCoinPool(Pool):
 	name = 'mineco.in'
+	pident_name = 'Mineco.in'
 	servers = ['mineco.in:3000']
 	fee = 0.0
 
 class MtRedPool(ProportionalPool):
 	name = 'mtred'
+	pident_name = 'MtRed'
 	servers = ['173.193.21.69:8337']
 	fee = 0.0
 
 	def get_data(self):
 		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
-		self.shares = int(data['roundshares'])
+		self.rate = float(data['hashrate']) * 1000000000.0
 
 
 #-------------------------------------------------------------------------------
@@ -164,10 +179,9 @@ class MtRedPool(ProportionalPool):
 
 _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
-	'bitclockers': BitClockersPool,
-#	'bitcoins.lc': BitCoinsLCPool,
+	'bitcoins.lc': BitCoinsLCPool,
 #	'bitpit': BitPitPool,
-#	'btcguild': BTCGuildPool,
+	'btcguild': BTCGuildPool,
 	'eclipsemc': EclipseMCPool,
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
