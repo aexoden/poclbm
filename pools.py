@@ -44,12 +44,15 @@ def get_servers(pools):
 
 def load_pool_config(filename):
 	pools = {}
+	priority = 1000
 
 	with open(filename, 'r') as f:
 		for line in f:
 			fields = re.split('\s+', line)
 
-			pools[fields[0]] = (fields[1], fields[2])
+			pools[fields[0]] = (fields[1], fields[2], priority)
+
+			priority -= 1
 
 	return pools
 
@@ -63,16 +66,13 @@ class PoolManager(object):
 
 	def load_pools(self, config_filename):
 		self.pools = {}
-		priority = 1
 
-		for pool, pool_data in sorted(load_pool_config(config_filename).items()):
+		for pool, pool_data in load_pool_config(config_filename).items():
 			if pool in _pool_class_map:
-				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1], priority)
-
-			priority += 1
+				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1], pool_data[2])
 
 	def get_best_pools(self):
-		return sorted(self.pools.values(), key=lambda pool: (pool.utility, 0 - pool.priority), reverse=True)
+		return sorted(self.pools.values(), key=lambda pool: (pool.utility, pool.priority), reverse=True)
 
 #-------------------------------------------------------------------------------
 # Pool Base Class
@@ -192,6 +192,17 @@ class MtRedPool(ProportionalPool):
 		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
 		self.rate = float(data['hashrate']) * 1000000000.0
 
+class TripleMiningPool(ProportionalPool):
+	name = 'triplemining'
+	pident_name = 'TripleMining'
+	servers = ['eu.triplemining.com:8344']
+	fee = 0.01
+
+	def get_data(self):
+		data = urllib2.urlopen('https://www.triplemining.com').read()
+		matches = re.search('([0-9.]+) GHash', data)
+		self.rate = float(matches.group(1)) * 1000000000.0
+
 #-------------------------------------------------------------------------------
 # Module Setup
 #-------------------------------------------------------------------------------
@@ -205,4 +216,5 @@ _pool_class_map = {
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
 	'mtred': MtRedPool,
+	'triplemining': TripleMiningPool,
 }
