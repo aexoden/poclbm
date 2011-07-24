@@ -118,8 +118,11 @@ class ProportionalPool(Pool):
 # Unsupported Pools
 #-------------------------------------------------------------------------------
 
-# Slush
-# Uses a score-based system that I have no fully evaluated for hopping
+# Bitcoinpool
+# Uses a strange anti-hopping measure that needs to be evaluated.
+
+# Slush and BTCMine
+# Use a score-based systems that I have no fully evaluated for hopping
 # potential, but should be nearly hop-proof.
 
 # x8s
@@ -166,8 +169,6 @@ class MineCoinPool(Pool):
 #-------------------------------------------------------------------------------
 # POOLS TO ADD/UPDATE:
 # Bitcoinpool
-# BTCMine
-# DeepBit
 # Ozco.in
 
 class BitCoinsLCPool(ProportionalPool):
@@ -199,6 +200,16 @@ class MtRedPool(ProportionalPool):
 	def get_data(self):
 		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
 		self.rate = float(data['hashrate']) * 1000000000.0
+
+class OzCoinPool(ProportionalPool):
+	name = 'ozco.in'
+	pident_name = 'Ozco.in'
+	servers = ['ozco.in:8332']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('https://ozco.in/api.php').read())
+		self.rate = float(data['hashrate']) * 1000000.0
 
 class RFCPool(ProportionalPool):
 	name = 'rfcpool'
@@ -243,6 +254,7 @@ _pool_class_map = {
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
 	'mtred': MtRedPool,
+	'ozco.in': OzCoinPool,
 	'rfcpool': RFCPool,
 	'triplemining': TripleMiningPool,
 }

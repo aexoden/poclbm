@@ -108,11 +108,11 @@ mineco.in (http://mineco.in) (PPLNS)
 
 bitcoins.lc (http://bitcoins.lc)
 
-bitpit (http://pool.bitp.it)
-
 btcguild (http://www.btcguild.com)
 
 mtred (http://mtred.com)
+
+ozco.in (http://ozco.in)
 
 rfcpool (http://rfcpool.com)
 
