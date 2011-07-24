@@ -115,6 +115,18 @@ class ProportionalPool(Pool):
 		return utility * 1 - self.fee
 
 #-------------------------------------------------------------------------------
+# Unsupported Pools
+#-------------------------------------------------------------------------------
+
+# Slush
+# Uses a score-based system that I have no fully evaluated for hopping
+# potential, but should be nearly hop-proof.
+
+# x8s
+# Uses PPLNS payout, so is not hoppable. Charges a 1% fee, so there's no value
+# beyond the other backups already implemented.
+
+#-------------------------------------------------------------------------------
 # Geometric/PPLNS/SMPPS Pools
 #-------------------------------------------------------------------------------
 # TODO: Figure out which pools give transaction fees back.
@@ -157,10 +169,6 @@ class MineCoinPool(Pool):
 # BTCMine
 # DeepBit
 # Ozco.in
-# RFCPool
-# Slush
-# TripleMining
-# X8s
 
 class BitCoinsLCPool(ProportionalPool):
 	name = 'bitcoins.lc'
@@ -192,6 +200,25 @@ class MtRedPool(ProportionalPool):
 		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
 		self.rate = float(data['hashrate']) * 1000000000.0
 
+class RFCPool(ProportionalPool):
+	name = 'rfcpool'
+	pident_name = 'RFCPool'
+	servers = ['pool.rfcpool.com:8332']
+	fee = 0.0
+
+	def get_data(self):
+		data = json.loads(urllib2.urlopen('https://rfcpool.com/api/pool/stats').read())['poolstats']
+
+		multipliers = {
+			'H/s':  1.0,
+			'KH/s': 1000.0,
+			'MH/s': 1000000.0,
+			'GH/s': 1000000000.0,
+			'TH/s': 1000000000000.0,
+		}
+
+		self.rate = float(data['hashrate']) * multipliers[data['hashrate_unit']]
+
 class TripleMiningPool(ProportionalPool):
 	name = 'triplemining'
 	pident_name = 'TripleMining'
@@ -216,5 +243,6 @@ _pool_class_map = {
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
 	'mtred': MtRedPool,
+	'rfcpool': RFCPool,
 	'triplemining': TripleMiningPool,
 }
