@@ -4,24 +4,68 @@ poclbm-autohop
 Description
 -----------
 
-This modified version of poclbm is designed to automatically hop from mining
-pool to mining pool, maximizing the expected return for the user.
+This modified version of poclbm is designed to automatically hop among mining
+pools, constantly seeking the highest expected value per submitted share.
 
-The motivation for writing this modification is to encourage pool operators
-to move away from the proportional scoring system to a more suitable scoring
-system. Some potential alternatives are listed below:
+Due to the recent trend to mask statistics from users, it no longer uses round
+stats provided by the pool operators. Instead, it utilizes a service I am
+currently providing which lists the most recent blocks a pool could have found
+along with the probability that the block was found by the given pool. Using
+this information, the program is able to compute an expected value for each
+share.
 
-* Geometric: https://forum.bitcoin.org/index.php?topic=4787.0
-* SMPPS: http://eligius.st/wiki/index.php/Shared_Maximum_PPS
-* PPLNS: http://eligius.st/wiki/index.php/Pay_Per_Last_N_Shares
+Note, however, that this new method of hopping is not as efficient as the old
+method, but it will still provide a return of greater than 1.0 for the user.
+Exactly how much higher is an unknown question. Most important, however, it is
+immune from round stats hiding.
 
-All three of these systems should be fair to both constant and intermittent
-miners, as the expected value per share is the same regardless of when in a
-round the share was submitted (unlike proportional).
+There are still three primary methods a pool operator could use to disable this
+method of hopping (without changing reward system):
 
-I understand why the proportional system seems fair on its face, and its
-simplicity is hard to beat. I was initially a fan of the system. However, I have
-come to see that it is easily exploitable, unfortunately.
+* Hash Rate Hiding: The program depends on knowing each pool's hash rate in
+  order to estimate the current number of shares in a round. While a pool
+  operator could simply hide this information, it is possible to estimate it
+  based on the pool's solved blocks, so disabling this would be an ultimately
+  ineffective defense.
+* Block Hiding: If a pool reports neither its round stats, nor any of its solved
+  blocks, it should be impossible for the average user to hop the pool. However,
+  a pool going to such drastic obfuscation measures will likely drive away
+  miners, as well as make auditing the pool difficult.
+* Banning: A pool operator could choose to identify and ban potential hoppers.
+
+Of course, all three of these are inferior to simply changing to another reward
+system.
+
+Motivation
+----------
+
+The primary motivation for writing this program is to encourage pool operators
+to transition away from the proportional reward system to a hopping-proof
+system. There are several potential alternatives, and three are listed below:
+
+### PPLNS
+http://eligius.st/wiki/index.php/Pay_Per_Last_N_Shares
+
+This system is similar to proportional, but it always pays the last N shares
+that have been submitted. Some shares will be never paid, and some will be paid
+multiple times. In the end, the expected value of a share is fair for all
+miners, and with a suitable large N (such as the difficulty), variance is
+relatively low, even for intermittent miners.
+
+### Geometric
+https://forum.bitcoin.org/index.php?topic=4787.0
+
+This system is fair to all miners, but has a rather high variance for
+intermittent miners, unless the pool operator absorbs some of that variance by
+appropriately adjusting its parameters.
+
+### SMPPS (and variants)
+http://eligius.st/wiki/index.php/Shared_Maximum_PPS
+
+This system is similar to pay per share, but protects the pool operator by
+limiting payouts to the pool's actual earnings. There are various ways to
+implement this limit, some better than others. In any case, it is fair to all
+miners, and variance is very low.
 
 Usage
 -----
@@ -36,6 +80,11 @@ create a pools.conf file which contains lines of the following format:
 Example:
 eligius		username	password
 
+Pools are listed in order of priority in pools.conf. In other words, if two
+pools have the same utility, the pool listed first in the configuration file
+will be selected. In addition, any pool that is not listed in the file will not
+be used at all. This allows users to choose which pools they wish to use.
+
 The fields can be separated by any whitespace, but tabs are recommended. The
 currently supported pools are listed below:
 
@@ -47,6 +96,8 @@ appealing expected value per share.
 
 arsbitcoin (http://www.arsbitcoin.com) (SMPPS)
 
+bitpit (http://www.bitp.it) (ESMPPS)
+
 eclipsemc (http://www.eclipsemc.com) (Geometric)
 
 eligius (http://eligius.st) (SMPPS)
@@ -55,18 +106,27 @@ mineco.in (http://mineco.in) (PPLNS)
 
 ### Proportional Pools
 
-bitclockers (http://bitclockers.com)
-
 bitcoins.lc (http://bitcoins.lc)
 
 bitpit (http://pool.bitp.it)
 
 btcguild (http://www.btcguild.com)
-This pool is currently disabled, as it is using a stat delay to mask the
-inherent unfairness of its payout system. It will remain disabled only until a
-suitable workaround for the stats delay is in place.
 
 mtred (http://mtred.com)
+
+rfcpool (http://rfcpool.com)
+
+triplemining (http://www.triplemining.com)
+
+### Intentionally Unsupported Pools
+
+bitclockers (http://bitclockers.com)
+This pool currently hides its solved blocks along with round stats, making
+hopping more or less impossible for anyone but the operators.
+
+deepbit (http://www.deepbit.com)
+I have chosen not to provide Deepbit support due to its potential ability to
+reach the critical 50% mark. If this threat is diminished, it may be added.
 
 Command-line Parameters
 -----------------------
