@@ -11,29 +11,24 @@ Due to the recent trend to mask statistics from users, it no longer uses round
 stats provided by the pool operators. Instead, it utilizes a service I am
 currently providing which lists the most recent blocks a pool could have found
 along with the probability that the block was found by the given pool. Using
-this information, the program is able to compute an expected value for each
-share.
+this information, along with the estimated hash rate of hte pool, the program is
+able to compute an expected value for each share.
 
 Note, however, that this new method of hopping is not as efficient as the old
 method, but it will still provide a return of greater than 1.0 for the user.
 Exactly how much higher is an unknown question. Most important, however, it is
 immune from round stats hiding.
 
-There are still three primary methods a pool operator could use to disable this
+There are still two primary methods a pool operator could use to disable this
 method of hopping (without changing reward system):
 
-* Hash Rate Hiding: The program depends on knowing each pool's hash rate in
-  order to estimate the current number of shares in a round. While a pool
-  operator could simply hide this information, it is possible to estimate it
-  based on the pool's solved blocks, so disabling this would be an ultimately
-  ineffective defense.
 * Block Hiding: If a pool reports neither its round stats, nor any of its solved
   blocks, it should be impossible for the average user to hop the pool. However,
   a pool going to such drastic obfuscation measures will likely drive away
   miners, as well as make auditing the pool difficult.
 * Banning: A pool operator could choose to identify and ban potential hoppers.
 
-Of course, all three of these are inferior to simply changing to another reward
+Of course, both of these are inferior to simply changing to another reward
 system.
 
 Motivation

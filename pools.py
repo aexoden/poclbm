@@ -5,8 +5,10 @@ import scipy.integrate
 import time
 import urllib2
 
+import httplib2
+
 _difficulty = (0, 0)
-_pool_blocks = ({}, 0)
+_pool_data = ({}, 0)
 
 #-------------------------------------------------------------------------------
 # Functions
@@ -21,17 +23,32 @@ def get_difficulty():
 
 	return _difficulty[0]
 
-def get_pool_blocks(pool):
-	global _pool_blocks
+def get_pool_rate(pool):
+	global _pool_data
 
-	if time.time() - _pool_blocks[1] > 120:
+	update_pool_data(pool)
+
+	return _pool_data[0]['rates'][pool] if pool in _pool_data[0]['rates'] else 0.0
+
+def get_pool_most_recent_block(pool):
+	global _pool_data
+
+	update_pool_data(pool)
+
+	return _pool_data[0]['most_recent_block'][pool] if pool in _pool_data[0]['most_recent_block'] else {}
+
+def update_pool_data(pool):
+	global _pool_data
+
+	if time.time() - _pool_data[1] > 120:
 		try:
-			pool_blocks = json.loads(urllib2.urlopen('http://bitcoin.calindora.com/pool_recent_blocks.json').read())
-			_pool_blocks = (pool_blocks, time.time())
+			h = httplib2.Http('.cache')
+			response, content = h.request('http://bitcoin.calindora.com/api/pools/')
+
+			pool_data = json.loads(content)
+			_pool_data = (pool_data, time.time())
 		except:
 			pass
-
-	return _pool_blocks[0][pool] if pool in _pool_blocks[0] else {}
 
 def get_servers(pools):
 	servers = []
@@ -83,7 +100,6 @@ class Pool(object):
 		self.username = username
 		self.password = password
 		self.priority = priority
-		self.last_update = 0
 		self.rate = 1.0
 
 	@property
@@ -91,9 +107,7 @@ class Pool(object):
 		return 1.0 * (1 - self.fee)
 
 	def update_data(self):
-		if time.time() - self.last_update > 120:
-			self.get_data()
-			self.last_update = time.time()
+		self.rate = get_pool_rate(self.pident_name)
 
 class ProportionalPool(Pool):
 	@property
@@ -103,7 +117,7 @@ class ProportionalPool(Pool):
 		except (ValueError, urllib2.HTTPError):
 			pass
 
-		blocks = get_pool_blocks(self.pident_name)
+		blocks = get_pool_most_recent_block(self.pident_name)
 
 		utility = 0.0
 
@@ -111,6 +125,7 @@ class ProportionalPool(Pool):
 			shares = (self.rate * (time.time() - float(block_time))) / 2 ** 32
 			progress = max(shares, 1.0) / get_difficulty()
 			utility += probability * scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
+#			print(self.name, shares, progress, utility)
 
 		return utility * 1 - self.fee
 
@@ -169,7 +184,6 @@ class MineCoinPool(Pool):
 #-------------------------------------------------------------------------------
 # POOLS TO ADD/UPDATE:
 # Bitcoinpool
-# Ozco.in
 
 class BitCoinsLCPool(ProportionalPool):
 	name = 'bitcoins.lc'
@@ -177,19 +191,11 @@ class BitCoinsLCPool(ProportionalPool):
 	servers = ['bitcoins.lc:8080']
 	fee = 0.0
 
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('http://www.bitcoins.lc/stats.json').read())
-		self.rate = float(data['hash_rate'])
-
 class BTCGuildPool(ProportionalPool):
 	name = 'btcguild'
 	pident_name = 'BTCGuild'
 	servers = ['uswest.btcguild.com:8332', 'uscentral.btcguild.com:8332',]
 	fee = 0.0
-
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('http://www.btcguild.com/pool_stats.php').read())
-		self.rate = float(data['hash_rate']) * 1000000000.0
 
 class MtRedPool(ProportionalPool):
 	name = 'mtred'
@@ -197,19 +203,11 @@ class MtRedPool(ProportionalPool):
 	servers = ['mtred.com:8337']
 	fee = 0.0
 
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('https://mtred.com/api/stats').read())
-		self.rate = float(data['hashrate']) * 1000000000.0
-
 class OzCoinPool(ProportionalPool):
 	name = 'ozco.in'
 	pident_name = 'Ozco.in'
 	servers = ['ozco.in:8332']
 	fee = 0.0
-
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('https://ozco.in/api.php').read())
-		self.rate = float(data['hashrate']) * 1000000.0
 
 class RFCPool(ProportionalPool):
 	name = 'rfcpool'
@@ -217,29 +215,11 @@ class RFCPool(ProportionalPool):
 	servers = ['pool.rfcpool.com:8332']
 	fee = 0.0
 
-	def get_data(self):
-		data = json.loads(urllib2.urlopen('https://rfcpool.com/api/pool/stats').read())['poolstats']
-
-		multipliers = {
-			'H/s':  1.0,
-			'KH/s': 1000.0,
-			'MH/s': 1000000.0,
-			'GH/s': 1000000000.0,
-			'TH/s': 1000000000000.0,
-		}
-
-		self.rate = float(data['hashrate']) * multipliers[data['hashrate_unit']]
-
 class TripleMiningPool(ProportionalPool):
 	name = 'triplemining'
 	pident_name = 'TripleMining'
 	servers = ['eu.triplemining.com:8344']
 	fee = 0.01
-
-	def get_data(self):
-		data = urllib2.urlopen('https://www.triplemining.com').read()
-		matches = re.search('([0-9.]+) GHash', data)
-		self.rate = float(matches.group(1)) * 1000000000.0
 
 #-------------------------------------------------------------------------------
 # Module Setup
