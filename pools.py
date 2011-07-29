@@ -140,10 +140,6 @@ class ProportionalPool(Pool):
 # Use a score-based systems that I have no fully evaluated for hopping
 # potential, but should be nearly hop-proof.
 
-# x8s
-# Uses PPLNS payout, so is not hoppable. Charges a 1% fee, so there's no value
-# beyond the other backups already implemented.
-
 #-------------------------------------------------------------------------------
 # Geometric/PPLNS/SMPPS Pools
 #-------------------------------------------------------------------------------
@@ -165,13 +161,14 @@ class EclipseMCPool(Pool):
 	name = 'eclipsemc'
 	pident_name = 'EclipseMC'
 	servers = ['us.eclipsemc.com:8337', 'eu.eclipsemc.com:8337']
-	fee = 0.0
+	fee = 0.01
+	# EclipseMC is currently running with a 1% fee due to its parameters to the geometric scoring method.
 
 class EligiusPool(Pool):
 	name = 'eligius'
 	pident_name = 'Eligius'
 	servers = ['mining.eligius.st:8337']
-	fee = 0.000001
+	fee = 0.000004
 
 class MineCoinPool(Pool):
 	name = 'mineco.in'
@@ -182,13 +179,11 @@ class MineCoinPool(Pool):
 #-------------------------------------------------------------------------------
 # Proportional Pools
 #-------------------------------------------------------------------------------
-# POOLS TO ADD/UPDATE:
-# Bitcoinpool
 
 class BitCoinsLCPool(ProportionalPool):
 	name = 'bitcoins.lc'
 	pident_name = 'Bitcoins.lc'
-	servers = ['bitcoins.lc:8080']
+	servers = ['pool.bitlc.net:8332']
 	fee = 0.0
 
 class BTCGuildPool(ProportionalPool):
