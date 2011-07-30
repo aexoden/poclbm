@@ -198,6 +198,12 @@ class MtRedPool(ProportionalPool):
 	servers = ['mtred.com:8337']
 	fee = 0.0
 
+class NoFeeMining(ProportionalPool):
+	name = 'nofeemining'
+	pident_name = 'NoFeeMining'
+	servers = ['nofeemining.com:8332']
+	fee = 0.0
+
 class OzCoinPool(ProportionalPool):
 	name = 'ozco.in'
 	pident_name = 'Ozco.in'
@@ -229,6 +235,7 @@ _pool_class_map = {
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
 	'mtred': MtRedPool,
+	'nofeemining': NoFeeMining,
 	'ozco.in': OzCoinPool,
 	'rfcpool': RFCPool,
 	'triplemining': TripleMiningPool,
