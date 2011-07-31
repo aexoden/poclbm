@@ -60,7 +60,8 @@ http://eligius.st/wiki/index.php/Shared_Maximum_PPS
 This system is similar to pay per share, but protects the pool operator by
 limiting payouts to the pool's actual earnings. There are various ways to
 implement this limit, some better than others. In any case, it is fair to all
-miners, and variance is very low.
+miners, and variance is very low. However, an unlucky streak poses a greater
+risk of ultimately killing the pool.
 
 Usage
 -----
