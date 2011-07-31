@@ -34,10 +34,10 @@ class Transport(object):
 		if not self.servers:
 			self.failure('At least one server is required')
 		else:
-			say_line('Switching to {} with utility {:.3f}'.format(self.best_pools[0].name, self.best_pools[0].utility), show_server=False)
+			say_line('Switching to {0} with utility {1:.3f}'.format(self.best_pools[0].name, self.best_pools[0].utility), show_server=False)
 			say_line("Current utilities:", show_server=False)
 			for pool in self.best_pools:
-				say_line('  {:15}: {:.3f}'.format(pool.name, pool.utility), show_server=False)
+				say_line('  {0:15}: {1:.3f}'.format(pool.name, pool.utility), show_server=False)
 
 			self.set_server(self.servers[0])
 			self.user_servers = list(self.servers)
