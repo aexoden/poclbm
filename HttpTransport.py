@@ -19,17 +19,15 @@ class HttpTransport(Transport):
 	def __init__(self, miner):
 		self.connection = self.lp_connection = None
 		super(HttpTransport, self).__init__(miner)
-		self.timeout = 45
+		self.timeout = 5
 		self.long_poll_timeout = 3600
-		self.long_poll_max_askrate = 75
+		self.long_poll_max_askrate = 60 - self.timeout
 		self.max_redirects = 3
 
 		self.postdata = {'method': 'getwork', 'id': 'json'}
 
 		self.long_poll_active = False
 		self.long_poll_url = ''
-		
-		self.getwork_count = 0
 
 	def loop(self):
 		self.should_stop = False
@@ -47,15 +45,10 @@ class HttpTransport(Transport):
 					if self.update:
 						self.queue_work(work)
 
-				retry = []
 				while not self.result_queue.empty():
 					result = self.result_queue.get(False)
 					with self.lock:
 						rv = self.send(result)
-						if rv is False:
-							retry.append(result)
-				for result in retry:
-					self.result_queue.put(result)
 				sleep(1)
 			except Exception:
 				say_line("Unexpected error:")
@@ -118,8 +111,6 @@ class HttpTransport(Transport):
 				self.failback_getwork_count += 1
 			if not self.connection:
 				self.connection = self.connect(self.proto, self.host, self.timeout)
-			if data is None:
-				self.getwork_count += 1
 			self.postdata['params'] = if_else(data, [data], [])
 			(self.connection, result) = self.request(self.connection, '/', self.headers, dumps(self.postdata))
 			self.errors = 0
@@ -155,8 +146,8 @@ class HttpTransport(Transport):
 	def send_internal(self, result, nonce):
 		data = ''.join([result.header.encode('hex'), pack('III', long(result.time), long(result.difficulty), long(nonce)).encode('hex'), '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'])
 		accepted = self.getwork(data)
-		self.report(nonce, accepted)
-		return not accepted is None
+		if accepted != None:
+			self.report(nonce, accepted)
 
 	def long_poll_thread(self):
 		last_host = None

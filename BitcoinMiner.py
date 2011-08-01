@@ -6,15 +6,10 @@ from sha256 import *
 from struct import pack
 from threading import Thread
 from time import sleep, time
-
 from util import *
 import log
 import pyopencl as cl
 
-def calculate_efficiency(shares, works):
-	if not works:
-		return "inf "
-	return "%.02f" % (float(shares) / works,)
 
 class BitcoinMiner():
 	def __init__(self, device, options, version, transport):
@@ -38,7 +33,6 @@ class BitcoinMiner():
 		log.verbose = self.options.verbose
 		log.quiet = self.options.quiet
 
-
 	def start(self):
 		self.should_stop = False
 		Thread(target=self.mining_thread).start()
@@ -49,26 +43,21 @@ class BitcoinMiner():
 		self.should_stop = True
 
 
-	def say_status(self, rate, estimated_rate, recent_efficiency):
+	def say_status(self, rate, estimated_rate):
 		rate = Decimal(rate) / 1000
 		estimated_rate = Decimal(estimated_rate) / 1000
 		total_shares = self.share_count[1] + self.share_count[0]
 		total_shares_estimator = max(total_shares, total_shares, 1)
-		overall_efficiency = calculate_efficiency(self.share_count[1], self.transport.getwork_count)
-		say_quiet('[%.03f MH/s (~%d MH/s Eff:%s)] [Rej: %d/%d (%.02f%%)] [GW: %d (Eff:%s)]', (rate, round(estimated_rate), recent_efficiency, self.share_count[0], total_shares, float(self.share_count[0]) * 100 / total_shares_estimator, self.transport.getwork_count, overall_efficiency))
+		say_quiet('[%.03f MH/s (~%d MH/s)] [Rej: %d/%d (%.02f%%)]', (rate, round(estimated_rate), self.share_count[0], total_shares, float(self.share_count[0]) * 100 / total_shares_estimator))
 
 	def diff1_found(self, hash, target):
 		if self.options.verbose and target < 0xFFFF0000L:
 			say_line('checking %s <= %s', (hash, target))
 
 	def share_found(self, hash, accepted, is_block):
-		if accepted is None:
-			outcome = 'ERROR (will resend)'
-		else:
-			self.share_count[if_else(accepted, 1, 0)] += 1
-			outcome = if_else(accepted, 'accepted', '_rejected_')
-		if self.options.verbose or self.options.show_all_shares or is_block or not accepted:
-			say_line('%s%s, %s', (if_else(is_block, 'block ', ''), hash, outcome))
+		self.share_count[if_else(accepted, 1, 0)] += 1
+		if self.options.verbose or is_block:
+			say_line('%s%s, %s', (if_else(is_block, 'block ', ''), hash, if_else(accepted, 'accepted', '_rejected_')))
 
 	def mining_thread(self):
 		self.load_kernel()
@@ -79,9 +68,8 @@ class BitcoinMiner():
 		queue = cl.CommandQueue(self.context)
 
 		start_time = last_rated_pace = last_rated = last_n_time = time()
-		accepted = base = last_hash_rate = threads_run_pace = threads_run = 0
+		base = last_hash_rate = threads_run_pace = threads_run = 0
 		accept_hist = []
-		accept_hist.append( (time(), 0, 0) )
 		output = np.zeros(self.output_size + 1, np.uint32)
 		output_buffer = cl.Buffer(self.context, cl.mem_flags.WRITE_ONLY | cl.mem_flags.USE_HOST_PTR, hostbuf=output)
 
@@ -128,17 +116,15 @@ class BitcoinMiner():
 
 				if accept_hist:
 					LAH = accept_hist.pop()
-					if LAH[1:] != (self.share_count[1], self.transport.getwork_count):
+					if LAH[1] != self.share_count[1]:
 						accept_hist.append(LAH)
-				accept_hist.append((now, self.share_count[1], self.transport.getwork_count))
+				accept_hist.append((now, self.share_count[1]))
 				while (accept_hist[0][0] < now - self.options.estimate):
 					accept_hist.pop(0)
 				new_accept = self.share_count[1] - accept_hist[0][1]
 				estimated_rate = Decimal(new_accept) * (work.targetQ) / min(int(now - start_time), self.options.estimate) / 1000
-				new_work = self.transport.getwork_count - accept_hist[0][2]
-				recent_efficiency = calculate_efficiency(new_accept, new_work)
 
-				self.say_status(rate, estimated_rate, recent_efficiency)
+				self.say_status(rate, estimated_rate)
 				last_rated = now; threads_run = 0
 
 			queue.finish()
