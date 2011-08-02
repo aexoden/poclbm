@@ -168,7 +168,7 @@ class EligiusPool(Pool):
 	name = 'eligius'
 	pident_name = 'Eligius'
 	servers = ['mining.eligius.st:8337']
-	fee = 0.000004
+	fee = 0.0
 
 class MineCoinPool(Pool):
 	name = 'mineco.in'
