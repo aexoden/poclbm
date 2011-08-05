@@ -122,7 +122,7 @@ class ProportionalPool(Pool):
 		utility = 0.0
 
 		for block_time, probability in sorted(blocks.items()):
-			shares = ((self.rate + 30 * 1000000000.0) * (time.time() - float(block_time))) / 2 ** 32
+			shares = ((self.rate + 80 * 1000000000.0) * (time.time() - float(block_time))) / 2 ** 32
 			progress = max(shares, 1.0) / get_difficulty()
 			utility += probability * scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
 #			print(self.name, shares, progress, utility)
