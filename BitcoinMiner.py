@@ -81,7 +81,6 @@ class BitcoinMiner():
 			if self.stale:
 				self.stale = False
 				work = None
-				print('Stale, discarding work')
 
 			if (not work) or (not self.work_queue.empty()):
 				try:
