@@ -183,7 +183,7 @@ class MineCoinPool(Pool):
 class BitCoinsLCPool(ProportionalPool):
 	name = 'bitcoins.lc'
 	pident_name = 'Bitcoins.lc'
-	servers = ['pool.bitlc.net:8332']
+	servers = ['bitcoins.lc:8080']
 	fee = 0.0
 
 class BTCGuildPool(ProportionalPool):
