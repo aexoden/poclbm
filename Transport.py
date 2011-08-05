@@ -91,6 +91,9 @@ class Transport(object):
 		del self.sent[nonce]
 
 	def set_server(self, server):
+		self.clear_result_queue()
+		self.miner.stale = True
+		self.update = True
 		self.server = server
 		proto, user, pwd, host, name = server
 		self.proto = proto

@@ -13,6 +13,7 @@ import pyopencl as cl
 
 class BitcoinMiner():
 	def __init__(self, device, options, version, transport):
+		self.stale = False
 		self.output_size = 0x100
 		self.options = options
 		self.version = version
@@ -41,7 +42,6 @@ class BitcoinMiner():
 	def stop(self):
 		self.transport.stop()
 		self.should_stop = True
-
 
 	def say_status(self, rate, estimated_rate):
 		rate = Decimal(rate) / 1000
@@ -77,6 +77,12 @@ class BitcoinMiner():
 		while True:
 		        sleep(self.options.frameSleep)
 			if self.should_stop: return
+
+			if self.stale:
+				self.stale = False
+				work = None
+				print('Stale, discarding work')
+
 			if (not work) or (not self.work_queue.empty()):
 				try:
 					work = self.work_queue.get(True, 1)
@@ -95,6 +101,11 @@ class BitcoinMiner():
 								f[0], f[1], f[2], f[3], f[4], # f[5], f[6], f[7],
 								output_buffer)
 			cl.enqueue_read_buffer(queue, output_buffer, output)
+
+			if self.stale:
+				self.stale = False
+				work = None
+				continue
 
 			nonces_left -= global_threads
 			threads_run_pace += global_threads
