@@ -196,7 +196,7 @@ class MtRedPool(ProportionalPool):
 	name = 'mtred'
 	pident_name = 'MtRed'
 	servers = ['mtred.com:8337']
-	fee = 0.0
+	fee = 0.02
 
 class NoFeeMining(ProportionalPool):
 	name = 'nofeemining'
