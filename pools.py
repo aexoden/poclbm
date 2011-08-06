@@ -109,6 +109,9 @@ class Pool(object):
 	def update_data(self):
 		self.rate = get_pool_rate(self.pident_name)
 
+	def get_shares(self, start):
+		return self.rate * (time.time() - start) / 2 ** 32
+
 class ProportionalPool(Pool):
 	@property
 	def utility(self):
@@ -122,12 +125,18 @@ class ProportionalPool(Pool):
 		utility = 0.0
 
 		for block_time, probability in sorted(blocks.items()):
-			shares = ((self.rate + 80 * 1000000000.0) * (time.time() - float(block_time))) / 2 ** 32
+			shares = self.get_shares(float(block_time))
 			progress = max(shares, 1.0) / get_difficulty()
 			utility += probability * scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
-#			print(self.name, shares, progress, utility)
 
 		return utility * 1 - self.fee
+
+	def get_shares(self, start):
+		hopper_bonus = 100.0 * 1000000000.0
+		base_rate = (math.sqrt(2) * math.sqrt(50 * (hopper_bonus ** 2) + 13 * hopper_bonus * self.rate + 50 * (self.rate ** 2)) - 10 * hopper_bonus + 10 * self.rate) / 20
+		rate = base_rate + hopper_bonus
+
+		return rate * (time.time() - start) / 2 ** 32
 
 #-------------------------------------------------------------------------------
 # Unsupported Pools
