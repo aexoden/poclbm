@@ -179,6 +179,12 @@ class EligiusPool(Pool):
 	servers = ['mining.eligius.st:8337']
 	fee = 0.0
 
+class MainframeMCPool(Pool):
+	name = 'mainframemc'
+	pident_name = 'MainframeMC'
+	servers = ['mining.mainframe.nl:8343']
+	fee = 0.015
+
 class MineCoinPool(Pool):
 	name = 'mineco.in'
 	pident_name = 'Mineco.in'
