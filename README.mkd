@@ -71,15 +71,19 @@ options remain the same. The one exception is configuring the servers. There is
 no longer a way to specify servers via the command line. Instead, you must
 create a pools.conf file which contains lines of the following format:
 
-<pool name>	<username>	<password>
+<pool name>	<username>	<password>	<donation>
 
 Example:
-eligius		username	password
+arsbitcoin	username	password	1.0
 
 Pools are listed in order of priority in pools.conf. In other words, if two
 pools have the same utility, the pool listed first in the configuration file
 will be selected. In addition, any pool that is not listed in the file will not
 be used at all. This allows users to choose which pools they wish to use.
+
+The donation field is optional. It specifies your current donation percentage to
+the given pool. This allows the miner to calculate a more accurate utility for
+the pool.
 
 The fields can be separated by any whitespace, but tabs are recommended. The
 currently supported pools are listed below:
@@ -97,6 +101,8 @@ bitpit (http://www.bitp.it) (ESMPPS)
 eclipsemc (http://www.eclipsemc.com) (Geometric)
 
 eligius (http://eligius.st) (SMPPS)
+
+mainframemc (http://mining.mainframe.nl) (Geometric)
 
 mineco.in (http://mineco.in) (PPLNS)
 
