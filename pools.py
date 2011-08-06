@@ -86,7 +86,12 @@ class PoolManager(object):
 
 		for pool, pool_data in load_pool_config(config_filename).items():
 			if pool in _pool_class_map:
-				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1], pool_data[2])
+				if len(pool_data) > 3:
+					donation = float(pool_data[3]) / 100.0
+				else:
+					donation = 0.0
+
+				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1], pool_data[2], donation)
 
 	def get_best_pools(self):
 		return sorted(self.pools.values(), key=lambda pool: (pool.utility, pool.priority), reverse=True)
@@ -96,15 +101,16 @@ class PoolManager(object):
 #-------------------------------------------------------------------------------
 
 class Pool(object):
-	def __init__(self, username, password, priority):
+	def __init__(self, username, password, priority, donation):
 		self.username = username
 		self.password = password
 		self.priority = priority
 		self.rate = 1.0
+		self.donation = donation
 
 	@property
 	def utility(self):
-		return 1.0 * (1 - self.fee)
+		return 1.0 * (1 - self.fee - self.donation)
 
 	def update_data(self):
 		self.rate = get_pool_rate(self.pident_name)
@@ -129,7 +135,7 @@ class ProportionalPool(Pool):
 			progress = max(shares, 1.0) / get_difficulty()
 			utility += probability * scipy.integrate.quad((lambda x: (math.exp(progress - x) / x)), progress, 100.0)[0]
 
-		return utility * 1 - self.fee
+		return utility * (1 - self.fee - self.donation)
 
 	def get_shares(self, start):
 		hopper_bonus = 100.0 * 1000000000.0
