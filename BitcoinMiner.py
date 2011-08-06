@@ -81,6 +81,7 @@ class BitcoinMiner():
 			if self.stale:
 				self.stale = False
 				work = None
+				print('Dropping stale shares early')
 
 			if (not work) or (not self.work_queue.empty()):
 				try:
@@ -104,6 +105,7 @@ class BitcoinMiner():
 			if self.stale:
 				self.stale = False
 				work = None
+				print('Dropping stale shares late')
 				continue
 
 			nonces_left -= global_threads
