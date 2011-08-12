@@ -207,6 +207,12 @@ class BitCoinsLCPool(ProportionalPool):
 	servers = ['bitcoins.lc:8080']
 	fee = 0.0
 
+class BitMinterPool(ProportionalPool):
+	name = 'bitminter'
+	pident_name = 'BitMinter'
+	servers = ['mint.bitminter.com:8332']
+	fee = 0.0
+
 class BTCGuildPool(ProportionalPool):
 	name = 'btcguild'
 	pident_name = 'BTCGuild'
@@ -250,6 +256,7 @@ class TripleMiningPool(ProportionalPool):
 _pool_class_map = {
 	'arsbitcoin': ArsBitcoinPool,
 	'bitcoins.lc': BitCoinsLCPool,
+	'bitminter': BitMinterPool,
 	'bitpit': BitPitPool,
 	'btcguild': BTCGuildPool,
 	'eclipsemc': EclipseMCPool,

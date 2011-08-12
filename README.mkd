@@ -110,6 +110,8 @@ mineco.in (http://mineco.in) (PPLNS)
 
 bitcoins.lc (http://bitcoins.lc)
 
+bitminter (http://bitminter.com)
+
 btcguild (http://www.btcguild.com)
 
 mtred (http://mtred.com)
