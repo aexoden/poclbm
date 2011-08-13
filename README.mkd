@@ -120,8 +120,6 @@ nofeemining (http://nofeemining.com)
 
 ozco.in (http://ozco.in)
 
-rfcpool (http://rfcpool.com)
-
 triplemining (http://www.triplemining.com)
 
 ### Intentionally Unsupported Pools

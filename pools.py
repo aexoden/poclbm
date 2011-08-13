@@ -237,12 +237,6 @@ class OzCoinPool(ProportionalPool):
 	servers = ['ozco.in:8332']
 	fee = 0.0
 
-class RFCPool(ProportionalPool):
-	name = 'rfcpool'
-	pident_name = 'RFCPool'
-	servers = ['pool.rfcpool.com:8332']
-	fee = 0.0
-
 class TripleMiningPool(ProportionalPool):
 	name = 'triplemining'
 	pident_name = 'TripleMining'
@@ -265,6 +259,5 @@ _pool_class_map = {
 	'mtred': MtRedPool,
 	'nofeemining': NoFeeMining,
 	'ozco.in': OzCoinPool,
-	'rfcpool': RFCPool,
 	'triplemining': TripleMiningPool,
 }
