@@ -228,7 +228,7 @@ class MtRedPool(ProportionalPool):
 class NoFeeMining(ProportionalPool):
 	name = 'nofeemining'
 	pident_name = 'NoFeeMining'
-	servers = ['nofeemining.com:8332']
+	servers = ['nofeemining.appspot.com:80']
 	fee = 0.0
 
 class OzCoinPool(ProportionalPool):
