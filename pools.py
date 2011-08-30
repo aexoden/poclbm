@@ -67,7 +67,7 @@ def load_pool_config(filename):
 		for line in f:
 			fields = re.split('\s+', line)
 
-			pools[fields[0]] = (fields[1], fields[2], priority)
+			pools[fields[0]] = (fields[1], fields[2], (float(fields[3]) / 100.0) if len(fields) > 3 else 0.0, priority)
 
 			priority -= 1
 
@@ -86,12 +86,7 @@ class PoolManager(object):
 
 		for pool, pool_data in load_pool_config(config_filename).items():
 			if pool in _pool_class_map:
-				if len(pool_data) > 3:
-					donation = float(pool_data[3]) / 100.0
-				else:
-					donation = 0.0
-
-				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1], pool_data[2], donation)
+				self.pools[pool] = _pool_class_map[pool](pool_data[0], pool_data[1], pool_data[2], pool_data[3])
 
 	def get_best_pools(self):
 		return sorted(self.pools.values(), key=lambda pool: (pool.utility, pool.priority), reverse=True)
@@ -101,7 +96,7 @@ class PoolManager(object):
 #-------------------------------------------------------------------------------
 
 class Pool(object):
-	def __init__(self, username, password, priority, donation):
+	def __init__(self, username, password, donation, priority):
 		self.username = username
 		self.password = password
 		self.priority = priority
