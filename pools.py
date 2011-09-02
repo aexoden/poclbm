@@ -192,6 +192,12 @@ class MineCoinPool(Pool):
 	servers = ['mineco.in:3000']
 	fee = 0.0
 
+class NoFeeMining(Pool):
+	name = 'nofeemining'
+	pident_name = 'NoFeeMining'
+	servers = ['nofeemining.appspot.com:80']
+	fee = 0.0
+
 #-------------------------------------------------------------------------------
 # Proportional Pools
 #-------------------------------------------------------------------------------
@@ -218,12 +224,6 @@ class MtRedPool(ProportionalPool):
 	name = 'mtred'
 	pident_name = 'MtRed'
 	servers = ['mtred.com:8337']
-	fee = 0.0
-
-class NoFeeMining(ProportionalPool):
-	name = 'nofeemining'
-	pident_name = 'NoFeeMining'
-	servers = ['nofeemining.appspot.com:80']
 	fee = 0.0
 
 class OzCoinPool(ProportionalPool):
