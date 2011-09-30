@@ -96,6 +96,8 @@ appealing expected value per share.
 
 arsbitcoin (http://www.arsbitcoin.com) (SMPPS)
 
+bitminter (http://bitminter.com) (PPLNS)
+
 bitpit (http://www.bitp.it) (ESMPPS)
 
 eclipsemc (http://www.eclipsemc.com) (Geometric)
@@ -111,8 +113,6 @@ nofeemining (https://nofeemining.appspot.com) (RSMPPS)
 ### Proportional Pools
 
 bitcoins.lc (http://bitcoins.lc)
-
-bitminter (http://bitminter.com)
 
 btcguild (http://www.btcguild.com)
 

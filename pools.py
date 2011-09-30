@@ -161,6 +161,12 @@ class ArsBitcoinPool(Pool):
 	servers = ['arsbitcoin.com:8344']
 	fee = 0.0
 
+class BitMinterPool(Pool):
+	name = 'bitminter'
+	pident_name = 'BitMinter'
+	servers = ['mint.bitminter.com:8332']
+	fee = 0.0
+
 class BitPitPool(Pool):
 	name = 'bitpit'
 	pident_name = 'BitPit'
@@ -206,12 +212,6 @@ class BitCoinsLCPool(ProportionalPool):
 	name = 'bitcoins.lc'
 	pident_name = 'Bitcoins.lc'
 	servers = ['bitcoins.lc:8080']
-	fee = 0.0
-
-class BitMinterPool(ProportionalPool):
-	name = 'bitminter'
-	pident_name = 'BitMinter'
-	servers = ['mint.bitminter.com:8332']
 	fee = 0.0
 
 class BTCGuildPool(ProportionalPool):
