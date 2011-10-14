@@ -251,7 +251,7 @@ _pool_class_map = {
 	'eclipsemc': EclipseMCPool,
 	'eligius': EligiusPool,
 	'mineco.in': MineCoinPool,
-	'mtred': MtRedPool,
+#	'mtred': MtRedPool,
 	'nofeemining': NoFeeMining,
 	'ozco.in': OzCoinPool,
 	'triplemining': TripleMiningPool,
