@@ -151,7 +151,7 @@ class ProportionalPool(Pool):
 # potential, but should be nearly hop-proof.
 
 #-------------------------------------------------------------------------------
-# Geometric/PPLNS/SMPPS Pools
+# Fair Pools
 #-------------------------------------------------------------------------------
 # TODO: Figure out which pools give transaction fees back.
 
@@ -172,6 +172,12 @@ class BitPitPool(Pool):
 	pident_name = 'BitPit'
 	servers = ['pool.bitp.it:8334']
 	fee = 0.0
+
+class BTCGuildPool(Pool):
+	name = 'btcguild'
+	pident_name = 'BTCGuild'
+	servers = ['btcguild.com:8332']
+	fee = 0.05
 
 class EclipseMCPool(Pool):
 	name = 'eclipsemc'
@@ -212,12 +218,6 @@ class BitCoinsLCPool(ProportionalPool):
 	name = 'bitcoins.lc'
 	pident_name = 'Bitcoins.lc'
 	servers = ['bitcoins.lc:8080']
-	fee = 0.0
-
-class BTCGuildPool(ProportionalPool):
-	name = 'btcguild'
-	pident_name = 'BTCGuild'
-	servers = ['uswest.btcguild.com:8332', 'uscentral.btcguild.com:8332',]
 	fee = 0.0
 
 class MtRedPool(ProportionalPool):

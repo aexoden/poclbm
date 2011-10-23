@@ -100,6 +100,8 @@ bitminter (http://bitminter.com) (PPLNS)
 
 bitpit (http://www.bitp.it) (ESMPPS)
 
+btcguild (http://www.btcguild.com) (PPS - 5% fee)
+
 eclipsemc (http://www.eclipsemc.com) (Geometric)
 
 eligius (http://eligius.st) (SMPPS)
@@ -113,8 +115,6 @@ nofeemining (https://nofeemining.appspot.com) (RSMPPS)
 ### Proportional Pools
 
 bitcoins.lc (http://bitcoins.lc)
-
-btcguild (http://www.btcguild.com)
 
 mtred (http://mtred.com)
 
