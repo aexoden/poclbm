@@ -106,8 +106,6 @@ eclipsemc (http://www.eclipsemc.com) (Geometric)
 
 eligius (http://eligius.st) (SMPPS)
 
-mainframemc (http://mining.mainframe.nl) (Geometric)
-
 mineco.in (http://mineco.in) (PPLNS)
 
 nofeemining (https://nofeemining.appspot.com) (RSMPPS)
